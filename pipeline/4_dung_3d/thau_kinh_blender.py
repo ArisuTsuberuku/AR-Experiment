@@ -6,9 +6,15 @@ Mọi kích thước tính theo Dd = đường kính đĩa đen giữ kính (mé
 Phần kính dựng theo vật lí: thấu kính hai mặt lồi đối xứng, chiết suất n,
 bán kính mặt cong R = 2(n − 1)f (công thức thợ kính, thấu kính mỏng).
 
+Hai cụm tách rời, như dụng cụ thật (xuất thành 2 nút gốc trong GLB):
+  "DeKep"    : đế kẹp — khối sơn xám có lỗ vuông xuyên suốt và núm vặn để kẹp que.
+               Dùng chung cho các dụng cụ quang khác (màn chắn, nguồn sáng...).
+  "ThauKinh" : que thép + kẹp chữ V + đĩa + kính. Gốc nút ở đáy que; nút con
+               "TamQuang" đặt ở quang tâm. Que cắm vào đế, nhô lên --que-nho (m).
+
 Các bộ phận và chất liệu (ưu tiên kim loại):
   đế trụ thuôn + núm vặn  : kim loại sơn xám mờ, mép mòn lộ kim loại, bụi
-  cần                     : thép tròn gỉ nâu
+  que (chân thấu kính)    : thép tròn gỉ nâu
   kẹp chữ V, đĩa, vành kính: nhựa / sơn đen mờ, loang bụi, xước
   đinh tán                : đồng
   nhãn "+200 mm", giấy dán: phẳng, màu trơn
@@ -39,14 +45,23 @@ ap.add_argument("--out", default="scene.glb")
 ap.add_argument("--preview", default="")
 ap.add_argument("--tex", default="work/thau-kinh/tex")
 ap.add_argument("--tex-size", type=int, default=1024)
+ap.add_argument("--que-nho", type=float, default=None,
+                help="đoạn que nhô trên mặt đế (m); mặc định 0,10 Dd theo ảnh")
+ap.add_argument("--tach", type=float, default=0.0,
+                help="chỉ cho ảnh xem trước: nhấc cụm thấu kính lên (m) để thấy 2 phần")
 args = ap.parse_args(argv)
 Dd = args.Dd
 
 # ---------------------------------------------------------------- tỉ lệ (theo Dd), đo trên ảnh
-BASE_RB, BASE_RT, BASE_H = 0.26 * Dd, 0.235 * Dd, 0.27 * Dd   # đế thấp, bè (ảnh 2, 7)
-STEM_R = 0.02 * Dd
-K_Z0 = BASE_H - 0.03 * Dd            # đáy kẹp chữ V (chân kẹp cắm vào lỗ vuông)
-K_Z1 = K_Z0 + 0.09 * Dd              # đỉnh kẹp
+BASE_RB, BASE_RT, BASE_H = 0.26 * Dd, 0.235 * Dd, 0.27 * Dd   # thân đế thấp, bè (ảnh 2, 7)
+BOSS_R, BOSS_H = 0.175 * Dd, 0.025 * Dd                        # gờ nổi trên mặt đế (ảnh 19, 25)
+TOP = BASE_H + BOSS_H                                          # mặt trên đế kẹp
+STEM_R = 0.033 * Dd                  # que thép Ø ~ 0,066 Dd (ảnh 25: ≈ 1/7 đường kính đế)
+QUE_NHO = args.que_nho if args.que_nho is not None else 0.10 * Dd
+QUE_Z0 = 0.03 * Dd                   # đáy que (que xuyên gần hết lỗ, thấy được từ đáy đế)
+K_Z0 = TOP + QUE_NHO                 # đáy kẹp: đầu que
+K_ZM = K_Z0 + 0.05 * Dd              # hết khối kẹp đứng, bắt đầu loe chữ V
+K_Z1 = K_ZM + 0.07 * Dd              # đỉnh kẹp
 K_T = 0.06 * Dd                      # bề dày kẹp
 DISK_R = 0.5 * Dd
 DISK_T = 0.04 * Dd
@@ -116,9 +131,12 @@ bpy.ops.mesh.primitive_cone_add(vertices=72, radius1=BASE_RB, radius2=BASE_RT, d
 de = active()
 de.name = "De"
 bevel(de, 0.012 * Dd, seg=3, angle=40)
-apply_bool(de, box((0.09 * Dd, 0.065 * Dd, 0.3 * Dd), (0, 0, BASE_H)))                 # lỗ vuông cắm cần
-for x, y in [(-0.13 * Dd, -0.08 * Dd), (0.13 * Dd, 0.06 * Dd)]:
-    apply_bool(de, cyl(0.012 * Dd, 0.1 * Dd, (x, y, BASE_H), verts=24))               # 2 lỗ nhỏ trên mặt
+go = cyl(BOSS_R, BOSS_H * 2, (0, 0, BASE_H), verts=72, name="Go")
+bevel(go, 0.005 * Dd, seg=2, angle=40)
+apply_bool(de, go, op="UNION")                                                         # gờ nổi trên mặt
+apply_bool(de, box((0.15 * Dd, 0.09 * Dd, 0.8 * Dd), (0, 0, TOP)))                     # lỗ chữ nhật xuyên suốt
+for x, y in [(-0.10 * Dd, -0.07 * Dd), (0.0, 0.10 * Dd)]:
+    apply_bool(de, cyl(0.007 * Dd, 0.1 * Dd, (x, y, TOP), verts=16))                  # 2 lỗ nhỏ trên gờ
 apply_bool(de, box((0.08 * Dd, 0.8 * Dd, 0.09 * Dd), (0, 0, 0)))                      # rãnh dưới đáy
 smooth(de)
 
@@ -137,14 +155,16 @@ for o in (shaft, collar, wing):
     smooth(o)
 de_son = cl.join([de, shaft, collar, wing], "DeSonXam")
 
-# ---------------------------------------------------------------- 2. cần thép gỉ
-can = cyl(STEM_R, K_Z0 + 0.02 * Dd - 0.12 * Dd, (0, 0, (0.12 * Dd + K_Z0 + 0.02 * Dd) / 2), verts=24, name="Can")
+# ---------------------------------------------------------------- 2. que thép gỉ (chân thấu kính)
+q_top = K_Z0 + 0.03 * Dd             # đầu que ngậm vào khối kẹp
+can = cyl(STEM_R, q_top - QUE_Z0, (0, 0, (QUE_Z0 + q_top) / 2), verts=32, name="Que")
+bevel(can, 0.004 * Dd, seg=2, angle=40)
 smooth(can)
 
 # ---------------------------------------------------------------- 3. kẹp chữ V (nhựa đen)
 bm = bmesh.new()
-wb, wt = 0.06 * Dd, 0.24 * Dd
-pts = [(-wb / 2, K_Z0), (wb / 2, K_Z0), (wt / 2, K_Z1), (-wt / 2, K_Z1)]
+wb, wt = 0.08 * Dd, 0.26 * Dd
+pts = [(-wb / 2, K_ZM), (wb / 2, K_ZM), (wt / 2, K_Z1), (-wt / 2, K_Z1)]
 vf = [bm.verts.new((x, -K_T / 2, z)) for x, z in pts]
 vb = [bm.verts.new((x, K_T / 2, z)) for x, z in pts]
 bm.faces.new(vf[::-1])
@@ -158,9 +178,9 @@ bm.free()
 kep = bpy.data.objects.new("Kep", me)
 scene.collection.objects.link(kep)
 bevel(kep, 0.008 * Dd, seg=2)
-ong = cyl(0.035 * Dd, 0.06 * Dd, (0, 0, K_Z0 - 0.02 * Dd), verts=32, name="OngKep")
-smooth(ong)
-kep_nhua = cl.join([kep, ong], "KepNhua")
+khoi = box((wb, K_T * 1.1, K_ZM - K_Z0 + 0.01 * Dd), (0, 0, (K_Z0 + K_ZM) / 2 + 0.005 * Dd), name="KhoiKep")
+bevel(khoi, 0.006 * Dd, seg=2)
+kep_nhua = cl.join([kep, khoi], "KepNhua")
 
 # ---------------------------------------------------------------- 4. đĩa đen + vành kính
 rotY = (math.pi / 2, 0, 0)        # trục trụ nằm theo Y
@@ -255,19 +275,49 @@ cl.bake(can, "CanThepGi", cl.thep_gi_set, size=512, outdir=texdir)
 cl.bake(kep_nhua, "KepNhuaDen", cl.nhua_den_bui, size=512, outdir=texdir)
 cl.bake(dia_den, "DiaNhuaDen", cl.nhua_den_bui, size=args.tex_size, outdir=texdir)
 
+# ---------------------------------------------------------------- 2 cụm: DeKep, ThauKinh
+def empty(name, loc):
+    e = bpy.data.objects.new(name, None)
+    e.empty_display_size = 0.02
+    e.location = loc
+    scene.collection.objects.link(e)
+    return e
+
+
+bpy.context.view_layer.update()
+n_de = empty("DeKep", (0, 0, 0))
+n_tk = empty("ThauKinh", (0, 0, QUE_Z0))
+n_tq = empty("TamQuang", (0, 0, DISK_ZC))
+bpy.context.view_layer.update()
+n_tq.parent = n_tk
+n_tq.matrix_parent_inverse = n_tk.matrix_world.inverted()
+n_tk["f_m"] = args.f
+n_tk["n"] = args.n
+n_tk["R_m"] = round(R_CURV, 5)
+n_tk["ban_kinh_kinh_m"] = round(LENS_R, 5)
+for o in list(scene.objects):
+    if o.type != "MESH":
+        continue
+    parent = n_de if o == de_son else n_tk
+    o.parent = parent
+    o.matrix_parent_inverse = parent.matrix_world.inverted()
+
 # ---------------------------------------------------------------- xuất GLB
 for o in scene.objects:
-    o.select_set(o.type == "MESH")
+    o.select_set(o.type in ("MESH", "EMPTY"))
 out = os.path.abspath(args.out)
 os.makedirs(os.path.dirname(out), exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", use_selection=True, export_yup=True,
-                          export_apply=True, export_image_format="JPEG", export_jpeg_quality=90)
+                          export_apply=True, export_extras=True, export_image_format="JPEG", export_jpeg_quality=90)
 tris = sum(len(p.vertices) - 2 for o in scene.objects if o.type == "MESH" for p in o.data.polygons)
 top = DISK_ZC + DISK_R
 print(f"XONG GLB: {out} ({os.path.getsize(out)/1024:.0f} kB, ~{tris} tam giác, Dd = {Dd} m, "
-      f"cao {top:.3f} m, R mặt cong = {R_CURV*1000:.0f} mm, dày tâm kính = {2*center_half*1000:.1f} mm)")
+      f"cao {top:.3f} m, R mặt cong = {R_CURV*1000:.0f} mm, dày tâm kính = {2*center_half*1000:.1f} mm, "
+      f"quang tâm cao {DISK_ZC*100:.1f} cm, que nhô {QUE_NHO*100:.1f} cm)")
 
 if args.preview:
+    if args.tach:
+        n_tk.location.z += args.tach
     views = {"truoc": (0.0, -1.0, 0.15), "xien": (0.7, -0.7, 0.25), "sau": (-0.3, 1.0, 0.15),
              "ben": (1.0, -0.05, 0.12)}
-    cl.preview(scene, os.path.abspath(args.preview), (0, 0, 0.68 * Dd), Dd * 1.15, views=views)
+    cl.preview(scene, os.path.abspath(args.preview), (0, 0, 0.78 * Dd + args.tach / 2), Dd * 1.3 + args.tach, views=views)

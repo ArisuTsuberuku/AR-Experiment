@@ -13,7 +13,7 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 1. **Thầy:** cài lại `work/build/ARLab.apk` (15/11 22:22, 40,6 MB); xem chất liệu đế và cột dẫn dưới ánh sáng thật; báo lại chỗ còn "giả".
 2. **Thầy:** đo đèn (đường kính đáy đế, chiều cao tới đỉnh dây đỡ) và thấu kính (đường kính đĩa đen, đường kính phần kính, chiều cao đế).
 3. **Thầy:** góp ý mockup app v0.2 trên canvas Design "AR Lab — Mockup giao diện app" (5 màn hình; màn 5 kéo được thanh trượt).
-4. **Claude Code:** app v0.2 theo mockup (thư viện, xem 3D không bật camera, AR theo yêu cầu, tự dừng 2 phút, UI Toolkit, ánh sáng + bóng đổ); thêm thấu kính vào app.
+4. **Claude Code:** làm phiếu `docs/handoff/2026-11-15-app-v02-giao-dien-va-thau-kinh.md` (app v0.2: thư viện, xem 3D không bật camera, XR nạp theo yêu cầu, tự dừng 2 phút, UI Toolkit, ánh sáng + bóng đổ, thấu kính 2 cụm tách rời).
 5. **Thầy quyết định ⏸:** thêm thông số quang học (f, n) và lớp phủ tia sáng vào định dạng gói (đổi schema).
 6. **Cowork / Claude Code:** chạy lại 2 script Blender với số đo thật; build lại APK.
 7. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
@@ -22,6 +22,19 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 10. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo công khai hay riêng tư.
 
 ## Nhật ký
+
+### 2026-11-15 (22:45) — Thấu kính tách 2 cụm, phiếu giao app v0.2 (Claude Opus 5.5)
+
+Thầy góp ý: thấu kính bị tụt vào đế; thật ra đế là **đế kẹp**, chân thấu kính là **que kim loại** cắm vào và được núm vặn giữ.
+
+Đã làm:
+
+- `thau_kinh_blender.py`: thêm gờ nổi và lỗ chữ nhật xuyên suốt cho đế; que thép gỉ to hơn (Ø 0,066 Dd), nhô 0,10 Dd (tham số `--que-nho`); khối kẹp đứng trên đầu que rồi mới loe chữ V. Xuất **2 nút gốc** `DeKep` và `ThauKinh` (gốc ở đáy que, nút con `TamQuang` ở quang tâm, `extras` ghi f, n, R). Thêm `--tach` để render ảnh tách rời.
+- GLB mới: 801 kB, cao 0,178 m, quang tâm cao 11,8 cm. Báo cáo: mục 3b trong `docs/reports/2026-11-15-chat-lieu-thau-kinh-soat-hinh.md`.
+- Mockup: thay ảnh thấu kính mới; số d′ không còn bị xuống dòng.
+- Phiếu giao Claude Code: `docs/handoff/2026-11-15-app-v02-giao-dien-va-thau-kinh.md`.
+
+Ghi chú: hiệu ứng ánh sáng qua thấu kính (khúc xạ nền, tia sáng, vệt hội tụ) thầy hoãn; hướng giải quyết ghi trong câu trả lời phiên này, chưa đưa vào phiếu.
 
 ### 2026-11-15 (khuya) — Chất liệu kim loại, mô hình thấu kính, mockup app v0.2 (Claude Opus 5.5)
 

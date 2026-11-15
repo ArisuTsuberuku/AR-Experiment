@@ -1,7 +1,7 @@
 # Soát hình: chất liệu đèn sợi đốt v0.3 và mô hình thấu kính f = 200 mm
 
 - Ngày: 15/11/2026 · Người kiểm: Claude Opus 5.5 (Cowork)
-- Mô hình: `experiments/den-soi-dot/model/scene.glb` (0.2.0) và `experiments/thau-kinh-f200/model/scene.glb` (0.1.0)
+- Mô hình: `experiments/den-soi-dot/model/scene.glb` (0.2.0) và `experiments/thau-kinh-f200/model/scene.glb` (0.1.0, sửa 22:40: tách 2 cụm)
 - Cách kiểm: đặt cạnh nhau ảnh thật và render Cycles 4 góc; đọc vật liệu trong GLB
 - Kết luận: `can-sua` (đủ dùng để thử AR; chờ số đo thật và xem trên điện thoại)
 
@@ -59,6 +59,21 @@ Còn lệch:
 - Bản render Cycles vẽ kính hơi trắng đục; trong GLB kính vẫn trong suốt (đã kiểm tra `alphaMode`). Cần xem trên điện thoại.
 - Núm vặn trong ảnh to và vuông hơn; mặt trên đế có gờ bậc chưa dựng.
 - Số "02006.55" khắc dưới đáy chưa dựng (không cần cho bài học).
+
+## 3b. Sửa sau góp ý của thầy (22:30): tách 2 cụm, lộ que
+
+Thầy chỉ ra: thấu kính bị tụt vào đế, trong khi thật ra thấu kính có **que kim loại** làm chân, cắm vào **đế kẹp** và được núm vặn giữ lại. Xem lại ảnh 19 và 25 thì đúng như vậy: đế có gờ nổi và lỗ chữ nhật xuyên suốt, que gỉ Ø khoảng 0,066 Dd nhô khoảng 0,10 Dd, trên đầu que là khối kẹp đứng rồi mới loe chữ V.
+
+![Ảnh thật, 3 góc render và ảnh tách 2 cụm](2026-11-15-thau-kinh-tach-2-cum.jpg)
+
+Quyết định: **tách thành 2 nút gốc trong cùng một GLB** (`DeKep`, `ThauKinh`), chưa tách thành 2 file. Lí do:
+
+- Đúng với dụng cụ thật: độ cao quang tâm chỉnh được bằng cách nới núm vặn, nâng hạ que. Khi ghép thấu kính với nguồn sáng và màn chắn trên cùng trục chính, phải chỉnh được độ cao này.
+- Nút "Tách rời" trong app có thứ để tách.
+- Đế kẹp là loại dùng chung cho nhiều dụng cụ quang (màn chắn, giá nguồn sáng). Script đã tách riêng phần đế, nên sau này xuất được đế thành một mô hình dùng chung.
+- Vẫn một file cho mỗi gói nên không phải đổi định dạng gói.
+
+Kết quả: GLB 801 kB, ~17 700 tam giác, cao 0,178 m, quang tâm cao 11,8 cm. Nút `ThauKinh` có gốc ở đáy que, nút con `TamQuang` ở quang tâm, `extras` ghi f, n, R, bán kính kính (chỉ để app hiển thị; nguồn chuẩn vẫn là `experiment.json` khi thầy duyệt thêm trường).
 
 ## 4. Cần thầy đo
 
