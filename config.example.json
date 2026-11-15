@@ -1,0 +1,9 @@
+{
+  "_huong_dan": "Chép file này thành config.local.json (không vào git) rồi sửa đường dẫn theo máy. tools/kiem_tra_may.py tự làm việc này.",
+  "captures_root": "D:/OneDrive/Công việc/04_Kho_Tai_Nguyen_Chung/05_Du_An_Code_&_EdTech/AR_experiment_website",
+  "photos_dir": "01_Anh_Da_Goc",
+  "videos_dir": "02_Video_Goc",
+  "work_dir": "work",
+  "vault_dir": "D:/OneDrive/Documents/Obsidian Vault",
+  "blender_exe": "D:/Blender/blender.exe"
+}

@@ -1,0 +1,55 @@
+{
+  "subdir": "30-projects/13-AR-Experiment",
+  "common_related": ["00-Home", "MOC-Du-An-EdTech-va-Phan-Mem"],
+  "notes": [
+    {
+      "src": "docs/00-TONG-QUAN-HE-THONG.md",
+      "note": "AR-Experiment-00-Tong-Quan-He-Thong",
+      "title": "AR Experiment — Tổng quan hệ thống",
+      "tags": ["du-an/ar-experiment", "loai/dac-ta", "linh-vuc/phan-mem", "linh-vuc/giang-day", "cong-nghe/unity"],
+      "related": ["AR-Experiment-01-Lo-Trinh", "AR-Experiment-02-Quy-Uoc-Da-Agent", "AR-Experiment-Nhat-Ky-Tien-Trinh", "AR-Experiment-Website-Tien-Trinh", "MOC-He-Thong-IoT-ESP32-va-Thi-Nghiem-Vat-Ly"]
+    },
+    {
+      "src": "docs/01-LO-TRINH.md",
+      "note": "AR-Experiment-01-Lo-Trinh",
+      "title": "AR Experiment — Lộ trình",
+      "tags": ["du-an/ar-experiment", "loai/ke-hoach", "linh-vuc/phan-mem", "cong-nghe/unity"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong", "AR-Experiment-Nhat-Ky-Tien-Trinh"]
+    },
+    {
+      "src": "docs/02-QUY-UOC-DA-AGENT.md",
+      "note": "AR-Experiment-02-Quy-Uoc-Da-Agent",
+      "title": "AR Experiment — Quy ước dùng chung cho các agent",
+      "tags": ["du-an/ar-experiment", "loai/quy-tac", "linh-vuc/ai-agent", "linh-vuc/phan-mem"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong", "AGENTS", "Web-Tuong-Tac-PA-07-Quy-Trinh-Da-Agent-Va-Anh-Antigravity"]
+    },
+    {
+      "src": "docs/03-CAU-TRUC-THU-MUC-VA-DU-LIEU.md",
+      "note": "AR-Experiment-03-Cau-Truc-Thu-Muc-Va-Du-Lieu",
+      "title": "AR Experiment — Cấu trúc thư mục và dữ liệu",
+      "tags": ["du-an/ar-experiment", "loai/tham-chieu", "linh-vuc/may-tinh-du-lieu", "linh-vuc/phan-mem"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong", "May-HoangLinh-PC"]
+    },
+    {
+      "src": "docs/04-CONG-CU-CONNECTOR-PLUGIN.md",
+      "note": "AR-Experiment-04-Cong-Cu-Connector-Plugin",
+      "title": "AR Experiment — Công cụ, connector, plugin",
+      "tags": ["du-an/ar-experiment", "loai/danh-muc", "linh-vuc/ai-agent", "linh-vuc/phan-mem", "cong-nghe/unity"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong", "May-HoangLinh-PC"]
+    },
+    {
+      "src": "docs/05-DINH-DANG-GOI-THI-NGHIEM.md",
+      "note": "AR-Experiment-05-Dinh-Dang-Goi-Thi-Nghiem",
+      "title": "AR Experiment — Định dạng gói thí nghiệm",
+      "tags": ["du-an/ar-experiment", "loai/dac-ta", "linh-vuc/phan-mem", "cong-nghe/unity", "cong-nghe/firebase"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong"]
+    },
+    {
+      "src": "TIEN_TRINH.md",
+      "note": "AR-Experiment-Nhat-Ky-Tien-Trinh",
+      "title": "AR Experiment — Nhật ký tiến trình",
+      "tags": ["du-an/ar-experiment", "loai/tien-do", "linh-vuc/phan-mem"],
+      "related": ["AR-Experiment-00-Tong-Quan-He-Thong", "AR-Experiment-01-Lo-Trinh"]
+    }
+  ]
+}

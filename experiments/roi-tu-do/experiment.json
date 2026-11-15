@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.1",
+  "id": "roi-tu-do",
+  "title": "Rơi tự do",
+  "subject": { "grades": [10], "topic": "co-hoc" },
+  "version": "0.0.0",
+  "status": "draft",
+  "minAppVersion": "0.1.0",
+  "world": { "handedness": "right", "up": "+Y", "unit": "m" },
+  "anchor": { "type": "image-marker", "markerId": "arlab-01", "physicalWidthM": null },
+  "scene": { "staticModel": null },
+  "objects": [
+    {
+      "id": "bi",
+      "label": "Viên bi thép",
+      "shape": { "type": "sphere", "radiusM": null },
+      "track": null
+    }
+  ],
+  "timeline": { "t0": "tha-vat", "durationS": null, "sampleRateHz": null },
+  "overlays": [],
+  "results": [],
+  "provenance": null
+}

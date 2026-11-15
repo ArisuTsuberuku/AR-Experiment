@@ -1,0 +1,63 @@
+# --- Dữ liệu gốc và vùng làm việc (không vào git) ---
+/work/
+/captures/
+config.local.json
+*.mp4
+*.mov
+*.MOV
+*.MP4
+*.avi
+*.insv
+*.lrv
+
+# --- Bí mật ---
+.env
+.env.*
+*.keystore
+*.jks
+*.p12
+serviceAccount*.json
+firebase-debug.log
+.firebase/
+
+# --- Unity (thư mục sinh ra) ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.unityproj
+*.apk
+*.aab
+*.unitypackage
+crashlytics-build.properties
+ServerData/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- Hệ điều hành / trình soạn thảo ---
+Thumbs.db
+desktop.ini
+.DS_Store
+.vs/
+.vscode/
+.idea/
+
+# Ngoại lệ: video bản nhẹ đi kèm gói thí nghiệm
+!/experiments/**/media/*.mp4

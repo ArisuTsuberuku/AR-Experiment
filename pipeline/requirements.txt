@@ -1,0 +1,6 @@
+# Thư viện dự kiến cho pipeline (cài khi bắt đầu GĐ 2)
+numpy
+scipy
+pandas
+matplotlib
+opencv-python
