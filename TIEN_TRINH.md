@@ -10,16 +10,38 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 
 ## Tiếp
 
-1. **Thầy:** cài `work/build/ARLab.apk` lên điện thoại Android có ARCore (hướng dẫn: `unity/README.md`), thử đặt mô hình đèn sợi đốt lên bàn, đi một vòng quanh; báo lại: mô hình có đứng yên không, máy nào, chỗ nào lệch.
-2. **Thầy:** đo **đường kính đáy đế** mô hình đèn thật (cm) và chiều cao từ mặt bàn tới đỉnh dây đỡ.
-3. **Cowork / Claude Code:** chạy lại `pipeline/4_dung_3d/den_soi_dot_blender.py --D <số đo>`; sửa đoạn dây đỡ đi lên từ trụ giữa (xem `docs/reports/2026-11-15-den-soi-dot-soat-hinh.md`); build lại APK.
-4. **Thầy:** cài plugin Unity cho Claude Code trên PC để các phiên sau điều khiển được Unity Editor đang mở.
-5. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
-6. **Claude Code:** viết `pipeline/` cho 1 máy quay theo spec (GĐ 2).
-7. **Thầy:** cài ffmpeg và `pip install scipy pandas` (GĐ 2); cài RealityScan 2.2 trở lên nếu muốn quét ảnh phần đế.
-8. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo công khai hay riêng tư.
+1. **Thầy:** cài lại `work/build/ARLab.apk` (15/11 22:22, 40,6 MB); xem chất liệu đế và cột dẫn dưới ánh sáng thật; báo lại chỗ còn "giả".
+2. **Thầy:** đo đèn (đường kính đáy đế, chiều cao tới đỉnh dây đỡ) và thấu kính (đường kính đĩa đen, đường kính phần kính, chiều cao đế).
+3. **Thầy:** góp ý mockup app v0.2 trên canvas Design "AR Lab — Mockup giao diện app" (5 màn hình; màn 5 kéo được thanh trượt).
+4. **Claude Code:** app v0.2 theo mockup (thư viện, xem 3D không bật camera, AR theo yêu cầu, tự dừng 2 phút, UI Toolkit, ánh sáng + bóng đổ); thêm thấu kính vào app.
+5. **Thầy quyết định ⏸:** thêm thông số quang học (f, n) và lớp phủ tia sáng vào định dạng gói (đổi schema).
+6. **Cowork / Claude Code:** chạy lại 2 script Blender với số đo thật; build lại APK.
+7. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
+8. **Claude Code:** viết `pipeline/` cho 1 máy quay theo spec (GĐ 2).
+9. **Thầy:** cài ffmpeg và `pip install scipy pandas` (GĐ 2).
+10. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo công khai hay riêng tư.
 
 ## Nhật ký
+
+### 2026-11-15 (khuya) — Chất liệu kim loại, mô hình thấu kính, mockup app v0.2 (Claude Opus 5.5)
+
+Thầy đã thử APK trên điện thoại: đặt được mô hình, hiện "x1,00 · cao 15,1 cm". Thầy góp ý: giao diện đơn điệu; vào app bật camera ngay thì tốn pin; đế đèn trông "nhựa nhựa"; màu cột dẫn chưa đúng. Thầy chụp thêm 25 ảnh thấu kính hội tụ f = 200 mm vào `01_Anh_Da_Goc/Thau-kinh/`.
+
+Đã làm:
+
+- `pipeline/4_dung_3d/chat_lieu.py` (mới): thư viện chất liệu dùng chung, nướng ra 3 texture (màu, ORM, normal) để glTF chở được. Công thức: bakelit nâu, kim loại gỉ than chì, bạc xỉn, sơn xám mòn mép, thép gỉ, nhựa đen bụi.
+- Đèn sợi đốt v0.3 (gói 0.2.0): đế 8 mặt có vát, vân bakelit + bụi mép; cột dẫn xám đen gỉ, chân bạc màu; dây đỡ be xám mờ. GLB 1 039 kB.
+- `pipeline/4_dung_3d/thau_kinh_blender.py` (mới) và gói `experiments/thau-kinh-f200/` (bản nháp 0.1.0): đế sơn xám + núm vặn, cần thép gỉ, kẹp chữ V, đĩa đen lõm bậc, đinh tán đồng, nhãn "+200 mm"; kính hai mặt lồi R = 2(n − 1)f = 208 mm, tâm dày 3,4 mm. GLB 751 kB, kính `alphaMode = BLEND`.
+- Soát hình: `docs/reports/2026-11-15-chat-lieu-thau-kinh-soat-hinh.md` — kết luận `can-sua` (đủ thử AR, chờ số đo).
+- Build lại APK với đèn mới: `ARLAB_BUILD Succeeded`, 0 lỗi, 40,6 MB (tăng 9 MB do texture).
+- Mockup app v0.2 trên canvas Design của Claude (riêng tư): 5 màn hình 390 × 844 — Thư viện, Chi tiết 3D (camera tắt), AR tìm mặt phẳng, AR đã đặt + chú thích + thanh công cụ, AR lớp phủ tia sáng thấu kính (thanh trượt d, tính d′ và k theo 1/f = 1/d + 1/d′).
+
+Ghi chú:
+
+- Bản render Cycles vẽ kính hơi trắng đục; GLB vẫn đặt kính trong suốt. Cần xem trên điện thoại.
+- Thấu kính chưa có trong app (app hiện chỉ nạp 1 mô hình); để cho app v0.2.
+- Định dạng gói chưa có chỗ ghi f, n; tạm ghi trong `provenance.method`. Thêm trường mới là đổi schema → chờ thầy quyết.
+- Ảnh trong báo cáo chỉ có dụng cụ, không có học sinh (repo công khai).
 
 ### 2026-11-15 (tối) — Mô hình đèn sợi đốt và APK AR đầu tiên (Claude Opus 5.5)
 

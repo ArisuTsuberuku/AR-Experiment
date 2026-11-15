@@ -9,6 +9,8 @@ Chưa có mã. Thư mục con chia theo bước; mỗi bước là một script 
 | 2 | `2_dong_bo/` | Video nhiều máy | Độ lệch thời gian giữa các máy (bỏ qua khi 1 máy) |
 | 3 | `3_theo_doi/` | Video đã chép | Toạ độ điểm ảnh của vật theo từng khung |
 | 4 | `4_dung_3d/` | Ảnh đa góc | `model/scene.glb` đúng tỉ lệ mét (RealityScan hoặc AI tạo 3D, hậu kỳ Blender) |
+
+Trong `4_dung_3d/` hiện có: `chat_lieu.py` (thư viện chất liệu nướng texture, dùng chung), `den_soi_dot_blender.py`, `thau_kinh_blender.py` (dựng bằng script Blender theo tỉ lệ đo trên ảnh). Chạy: `D:/Blender/blender.exe -b --factory-startup -P <script> -- --help`.
 | 5 | `5_khop_mo_hinh/` | Toạ độ điểm ảnh + hiệu chuẩn | Quỹ đạo 3D, thông số vật lí, sai số |
 | 6 | `6_dong_goi/` | Kết quả các bước | `experiments/<mã>/` theo `docs/05-DINH-DANG-GOI-THI-NGHIEM.md` |
 | 7 | `7_kiem_chung/` | Gói + video gốc | Ảnh chồng cảnh dựng lên video, sai số chiếu ngược |

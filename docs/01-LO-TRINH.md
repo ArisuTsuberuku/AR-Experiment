@@ -9,9 +9,9 @@ Mỗi giai đoạn có một kết quả kiểm được và một agent chủ t
 | GĐ | Tên | Kết quả phải có | Tiêu chí nghiệm thu | Chủ trì | Trạng thái |
 |---|---|---|---|---|---|
 | 0 | Nền móng | Repo, kho dữ liệu, bộ tài liệu, quy ước agent, bản sao vault | Repo đẩy lên GitHub; `tools/sync_vault.py --check` báo khớp | Fable 5.2 | `xong` |
-| 1 | Môi trường và app khung | Unity 6.6 + Android Build Support; dự án `unity/ARLab`; APK đặt được mô hình đèn sợi đốt (GLB) lên mặt bàn | Trên điện thoại thật: mô hình đứng yên khi đi một vòng 360°, kích thước lệch không quá 5 % so với số đo | Claude Code | `dang-lam` — APK đã build, chờ thử trên điện thoại |
+| 1 | Môi trường và app khung | Unity 6.6 + Android Build Support; dự án `unity/ARLab`; APK đặt được mô hình đèn sợi đốt (GLB) lên mặt bàn | Trên điện thoại thật: mô hình đứng yên khi đi một vòng 360°, kích thước lệch không quá 5 % so với số đo | Claude Code | `dang-lam` — thầy đã thử APK trên điện thoại: đặt được, hiện đúng chiều cao; chờ đo đối chiếu và thử đi vòng 360° |
 | 2 | Đo từ video (1 máy quay) | `pipeline/` chạy trọn: nhập liệu → hiệu chuẩn → theo dõi → khớp mô hình; gói `roi-tu-do` có quỹ đạo và giá trị g | g đo được lệch không quá 2 % so với 9,8 m/s²; có sai số; chạy lại ra cùng kết quả | Claude Code (mã), Cowork (spec, kiểm số) | `cho` |
-| 3 | Mô hình 3D từ ảnh đa góc | Mô hình tĩnh đúng tỉ lệ mét, GLB dưới 10 MB. Bản đầu: đèn sợi đốt (dựng bằng script Blender), sau đó bộ rơi tự do | Kích thước lệch không quá 2 % so với thước; soát hình đạt ở 4 hướng | Antigravity Argon (dựng, soát hình), Cowork (phiếu) | `dang-lam` — đèn sợi đốt bản 0.1.0, chờ số đo thật |
+| 3 | Mô hình 3D từ ảnh đa góc | Mô hình tĩnh đúng tỉ lệ mét, GLB dưới 10 MB. Bản đầu: đèn sợi đốt (dựng bằng script Blender), sau đó bộ rơi tự do | Kích thước lệch không quá 2 % so với thước; soát hình đạt ở 4 hướng | Antigravity Argon (dựng, soát hình), Cowork (phiếu) | `dang-lam` — đèn sợi đốt 0.2.0 (chất liệu nướng texture), thấu kính f = 200 mm 0.1.0; chờ số đo thật |
 | 4 | Trình phát thí nghiệm trong AR | App đọc gói, phát chuyển động: tốc độ thật, quay chậm, dừng từng khung; lớp phủ vệt, vectơ, đồ thị | Vị trí vật trong AR khớp file quỹ đạo ở mọi thời điểm kiểm tra; xem được 360° | Claude Code | `cho` |
 | 5 | Phân phối nội dung | Firebase Hosting chứa `catalog.json` và gói; app tải, lưu đệm, báo bản mới | Thêm một gói mới lên máy chủ → app đã cài thấy và chạy được, không build lại | Claude Code (app), Cowork (quy trình phát hành) | `cho` |
 | 6 | Kiểm chứng và công bố sai số | Ảnh chồng cảnh dựng lên video gốc; bảng sai số trong gói | Sai số chiếu ngược được ghi trong `provenance`; báo cáo trong `docs/reports/` | Cowork (số liệu), Argon (soát hình) | `cho` |
@@ -23,13 +23,14 @@ GĐ 2 và GĐ 3 độc lập với nhau, có thể làm song song sau GĐ 1. GĐ
 
 ## Việc kế tiếp (theo thứ tự)
 
-1. **Thầy:** cài `work/build/ARLab.apk` lên điện thoại Android có ARCore, thử đặt mô hình đèn sợi đốt; đo đường kính đáy đế thật. → nghiệm thu GĐ 1.
-2. **Cowork / Claude Code:** chạy lại script Blender với số đo thật, sửa đoạn dây đỡ, build lại APK.
-3. **Thầy:** cài plugin Unity cho Claude Code trên máy để các phiên sau điều khiển được Unity Editor.
-4. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại theo phiếu ghi trong `02_Video_Goc/_MAU_ghi-chu-phien-quay.md`; Cowork viết `docs/specs/roi-tu-do.md`.
-5. **Claude Code:** viết `pipeline/` cho trường hợp 1 máy quay theo spec. → GĐ 2.
-6. **Thầy:** cài ffmpeg; cài RealityScan (bản 2.2 trở lên hỗ trợ card AMD trên Windows, cần kiểm tra RX 9060 XT có trong danh sách). → chuẩn bị GĐ 3.
-7. **Thầy quyết định:** dự án Firebase (mới hay dùng chung), quyền riêng tư của repo.
+1. **Thầy:** cài lại `work/build/ARLab.apk` (bản 15/11 22:22, mô hình đèn có chất liệu mới), xem chất liệu đế và cột dẫn dưới ánh sáng thật; đo đèn (đường kính đáy đế, chiều cao) và thấu kính (đường kính đĩa đen, phần kính, chiều cao đế). → nghiệm thu GĐ 1, GĐ 3.
+2. **Thầy:** góp ý mockup giao diện app v0.2 (5 màn hình, canvas Design "AR Lab — Mockup giao diện app").
+3. **Claude Code:** app v0.2 theo mockup: thư viện + xem 3D không bật camera, AR chỉ chạy khi bấm "Đặt vào không gian", tự dừng sau 2 phút; UI Toolkit; ước lượng ánh sáng, bóng đổ; tải gói từ `catalog.json`.
+4. **Cowork / Claude Code:** chạy lại 2 script Blender với số đo thật; build lại APK.
+5. **Thầy quyết định ⏸:** thêm trường thông số quang học (f, n) và lớp phủ tia sáng vào định dạng gói (đổi schema).
+6. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại theo phiếu ghi trong `02_Video_Goc/_MAU_ghi-chu-phien-quay.md`; Cowork viết `docs/specs/roi-tu-do.md`.
+7. **Claude Code:** viết `pipeline/` cho trường hợp 1 máy quay theo spec. → GĐ 2.
+8. **Thầy quyết định:** dự án Firebase (mới hay dùng chung), quyền riêng tư của repo.
 
 ## Hướng phát triển dài hạn
 

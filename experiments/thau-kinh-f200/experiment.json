@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "0.1",
+  "id": "thau-kinh-f200",
+  "title": "Thấu kính hội tụ f = 200 mm trên giá",
+  "subject": { "grades": [9], "topic": "quang-hoc" },
+  "version": "0.1.0",
+  "status": "draft",
+  "minAppVersion": "0.1.0",
+  "world": { "handedness": "right", "up": "+Y", "unit": "m" },
+  "anchor": { "type": "plane", "markerId": null, "physicalWidthM": null },
+  "scene": { "staticModel": "model/scene.glb" },
+  "objects": [],
+  "timeline": null,
+  "overlays": [],
+  "results": [],
+  "provenance": {
+    "session": "01_Anh_Da_Goc/Thau-kinh (25 ảnh, 15/11/2026)",
+    "method": "dựng bằng script Blender theo tỉ lệ đo trên ảnh (pipeline/4_dung_3d/thau_kinh_blender.py); mặt kính hai mặt lồi R = 2(n − 1)f với f = 0,200 m (nhãn +200 mm trên giá), n = 1,52 (giả định thuỷ tinh crown)",
+    "scaleSource": "ƯỚC LƯỢNG: đường kính đĩa đen Dd = 0,12 m, chưa đo thật",
+    "pipelineVersion": "0.2.0",
+    "createdAt": "2026-11-15"
+  }
+}

@@ -9,6 +9,9 @@ Chạy (từ gốc repo):
   D:/Blender/blender.exe -b --factory-startup -P pipeline/4_dung_3d/den_soi_dot_blender.py -- \
       --D 0.12 --out experiments/den-soi-dot/model/scene.glb --preview work/den-soi-dot
 
+Bản 0.2: đế 8 mặt có gờ bo, chất liệu nướng ra texture (bakelit vân sọc, cột thép
+oxit than chì có đốm gỉ, đầu cột dập dẹt) — xem chat_lieu.py.
+
 Hệ trục trong Blender: Z lên, mặt trước của mô hình nhìn về -Y.
 Gốc toạ độ: tâm đáy đế, nằm trên mặt bàn (z = 0).
 """
@@ -21,12 +24,17 @@ import bpy
 import bmesh
 from mathutils import Vector
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import chat_lieu as cl  # noqa: E402
+
 # ---------------------------------------------------------------- tham số
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 ap = argparse.ArgumentParser()
 ap.add_argument("--D", type=float, default=0.12, help="đường kính đáy đế (m)")
 ap.add_argument("--out", default="scene.glb")
 ap.add_argument("--preview", default="", help="thư mục lưu ảnh render để so hình")
+ap.add_argument("--tex", default="work/den-soi-dot/tex", help="thư mục lưu texture đã nướng")
+ap.add_argument("--tex-size", type=int, default=1024)
 args = ap.parse_args(argv)
 D = args.D
 
@@ -76,10 +84,11 @@ def material(name, rgb, metallic=0.0, roughness=0.5):
     return m
 
 
-M_NHUA = material("NhuaNau", (0.24, 0.065, 0.032), 0.0, 0.30)
-M_CAOSU = material("CaoSuDen", (0.02, 0.02, 0.02), 0.0, 0.7)
-M_TRU = material("TruKimLoai", (0.035, 0.038, 0.038), 0.3, 0.7)
-M_DAY = material("DayKimLoai", (0.55, 0.52, 0.48), 1.0, 0.4)
+M_NHUA = material("NhuaNau_tam", (0.24, 0.065, 0.032), 0.0, 0.30)      # tạm, sẽ nướng lại
+M_CAOSU = cl.simple("CaoSuDen", (0.018, 0.018, 0.018), 0.0, 0.62)
+M_TRU = material("TruKimLoai_tam", (0.035, 0.038, 0.038), 0.3, 0.7)   # tạm, sẽ nướng lại
+M_DAY = cl.simple("DayDo_XamBe", cl.lin((0.70, 0.66, 0.60)), 0.55, 0.55)   # dây đỡ: xám be mờ
+M_SOI = cl.simple("SoiToc_Bac", cl.lin((0.80, 0.80, 0.78)), 1.0, 0.3)     # sợi tóc: bạc sáng
 
 
 def assign(obj, mat):
@@ -159,10 +168,19 @@ def catmull_rom(ctrl, per_seg=12, closed=False):
 
 
 # ---------------------------------------------------------------- 1. đế
-bpy.ops.mesh.primitive_cone_add(vertices=96, radius1=BASE_R_BOTTOM, radius2=BASE_R_TOP,
-                                depth=BASE_H, end_fill_type="NOTHING", location=(0, 0, BASE_H / 2))
+# 8 mặt phẳng, đỉnh lệch 22,5° để mỗi khe vòm nằm giữa một mặt (như vật thật)
+bpy.ops.mesh.primitive_cone_add(vertices=8, radius1=BASE_R_BOTTOM / math.cos(math.pi / 8),
+                                radius2=BASE_R_TOP / math.cos(math.pi / 8), depth=BASE_H,
+                                end_fill_type="NOTHING", location=(0, 0, BASE_H / 2),
+                                rotation=(0, 0, math.pi / 8))
 de = bpy.context.active_object
 de.name = "De"
+bev = de.modifiers.new("bo_canh", "BEVEL")
+bev.limit_method = "ANGLE"
+bev.angle_limit = math.radians(30)
+bev.width = 0.045 * D
+bev.segments = 4
+bpy.ops.object.modifier_apply(modifier=bev.name)
 sol = de.modifiers.new("day", "SOLIDIFY")
 sol.thickness = WALL
 sol.offset = -1.0
@@ -207,9 +225,17 @@ for key, (x, y) in RODS.items():
     assign(cylinder(f"Gu_{key}", 0.052 * D, 0.022 * D, (x, y, Z_DISK_TOP + 0.011 * D), verts=48), M_NHUA)
 
 # ---------------------------------------------------------------- 3. trụ
+TIP_H = 0.06 * D
+rod_parts = []
 for key, (x, y) in RODS.items():
-    t = assign(cylinder(f"Tru_{key}", ROD_R, ROD_H, (x, y, Z_DISK_TOP + ROD_H / 2), verts=24), M_TRU)
+    body_h = ROD_H - TIP_H * 0.8
+    t = assign(cylinder(f"Tru_{key}", ROD_R, body_h, (x, y, Z_DISK_TOP + body_h / 2), verts=24), M_TRU)
     shade_smooth(t)
+    tip = cylinder(f"DauTru_{key}", ROD_R, TIP_H, (x, y, Z_DISK_TOP + ROD_H - TIP_H / 2), verts=24)
+    tip.scale = (1.22, 0.62, 1.0)      # đầu cột bị dập dẹt
+    bpy.ops.object.transform_apply(scale=True)
+    assign(tip, M_TRU)
+    rod_parts += [t, tip]
 bpy.ops.mesh.primitive_cube_add(size=1, location=(0.13 * D, -0.07 * D, Z_DISK_TOP + 0.075 * D))
 coc = bpy.context.active_object
 coc.name = "CocNgan"
@@ -231,14 +257,14 @@ for idx, (a2, b2) in enumerate(COILS):
         ang = 2 * math.pi * COIL_TURNS * t
         p = a + (b - a) * t + COIL_R * (math.cos(ang) * u + math.sin(ang) * v)
         pts.append(tuple(p))
-    tube_from_points(f"SoiToc_{idx}", pts, COIL_WIRE, M_DAY)
+    tube_from_points(f"SoiToc_{idx}", pts, COIL_WIRE, M_SOI)
 
 # móc treo: từ đầu trụ lên tới đáy ống lò xo
 hooks = [(RODS["trai"], COILS[0][0]), (RODS["giua"], COILS[0][1]), (RODS["phai"], COILS[1][1])]
 for i, ((rx, ry), (cx, cy)) in enumerate(hooks):
     z0 = Z_DISK_TOP + ROD_H
     tube_from_points(f"Moc_{i}", [(rx, ry, z0 - 0.01 * D), (rx, ry, z0 + 0.03 * D),
-                                  (cx, cy, Z_COIL - COIL_R)], COIL_WIRE * 1.4, M_DAY)
+                                  (cx, cy, Z_COIL - COIL_R)], COIL_WIRE * 1.4, M_SOI)
 
 # ---------------------------------------------------------------- 5. dây đỡ (một dây liền)
 gx, gy = RODS["giua"]
@@ -262,50 +288,28 @@ for z, sx in [(zc1, -1), (zc2, 1)]:   # 2 chốt ngang kẹp dây vào trụ gi�
     tube_from_points(f"Chot_{z:.3f}", [(gx, gy, z), (gx + sx * (off + SUP_WIRE * 2), gy, z)],
                      SUP_WIRE * 0.9, M_DAY)
 
+# ---------------------------------------------------------------- nướng chất liệu
+texdir = os.path.abspath(args.tex)
+nhua = [o for o in scene.objects if o.type == "MESH" and (o.name in ("De", "SanDe", "Co", "Dia") or o.name.startswith("Gu_"))]
+de_nhua = cl.join(nhua, "DeNhua")
+cl.bake(de_nhua, "DeBakelit", cl.bakelit_nau, size=args.tex_size, outdir=texdir, z_top=BASE_H)
+tru = cl.join(rod_parts, "TruDan")
+cl.bake(tru, "TruThanChi", cl.kim_loai_gi_than_chi, size=args.tex_size, outdir=texdir,
+        z_floor=Z_DISK_TOP, z_patch=0.15 * D)
+cl.bake(coc, "CocBac", cl.kim_loai_bac_xin, size=256, outdir=texdir)
+
 # ---------------------------------------------------------------- xuất GLB
 for o in scene.objects:
     o.select_set(o.type == "MESH")
 out = os.path.abspath(args.out)
 os.makedirs(os.path.dirname(out), exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", use_selection=True,
-                          export_yup=True, export_apply=True)
+                          export_yup=True, export_apply=True,
+                          export_image_format="JPEG", export_jpeg_quality=90)
 tris = sum(len(p.vertices) - 2 for o in scene.objects if o.type == "MESH" for p in o.data.polygons)
 print(f"XONG GLB: {out}  ({os.path.getsize(out)/1024:.0f} kB, ~{tris} tam giác, D = {D} m, "
       f"cao {Z_LOOP + SUP_WIRE:.3f} m)")
 
 # ---------------------------------------------------------------- ảnh so hình
 if args.preview:
-    prev = os.path.abspath(args.preview)
-    os.makedirs(prev, exist_ok=True)
-    world = bpy.data.worlds.new("W")
-    world.use_nodes = True
-    world.node_tree.nodes["Background"].inputs[0].default_value = (0.18, 0.17, 0.16, 1)
-    world.node_tree.nodes["Background"].inputs[1].default_value = 0.35
-    scene.world = world
-    bpy.ops.mesh.primitive_plane_add(size=4 * D, location=(0, 0, 0))
-    assign(bpy.context.active_object, material("Ban", (0.04, 0.037, 0.034), 0.0, 0.8))
-    for loc, energy in [((0.6, -0.8, 1.0), 6.0), ((-0.8, -0.4, 0.8), 3.0), ((0, 0.8, 1.2), 2.0)]:
-        L = bpy.data.lights.new("L", "AREA")
-        L.energy = energy * (D / 0.12) ** 2 * 8
-        L.size = 0.5
-        lo = bpy.data.objects.new("L", L)
-        lo.location = Vector(loc) * (D / 0.12)
-        lo.rotation_euler = (Vector((0, 0, 0.1)) - lo.location).to_track_quat("-Z", "Y").to_euler()
-        scene.collection.objects.link(lo)
-    cam = bpy.data.objects.new("Cam", bpy.data.cameras.new("Cam"))
-    cam.data.lens = 50
-    scene.collection.objects.link(cam)
-    scene.camera = cam
-    scene.render.engine = "CYCLES"
-    scene.cycles.samples = 48
-    scene.cycles.device = "CPU"
-    scene.render.resolution_x, scene.render.resolution_y = 600, 800
-    target = Vector((0, 0, 0.62 * D))
-    views = {"truoc": (0.0, -1.0, 0.18), "xien": (0.7, -0.7, 0.25), "ben": (1.0, 0.0, 0.18),
-             "tren": (0.0, -0.25, 1.0)}
-    for name, d in views.items():
-        cam.location = target + Vector(d).normalized() * 3.8 * D
-        cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
-        scene.render.filepath = os.path.join(prev, f"{name}.png")
-        bpy.ops.render.render(write_still=True)
-        print("ANH:", scene.render.filepath)
+    cl.preview(scene, os.path.abspath(args.preview), (0, 0, 0.62 * D), D)
