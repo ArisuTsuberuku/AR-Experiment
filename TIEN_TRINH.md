@@ -10,14 +10,22 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 
 ## Tiếp
 
-1. **Thầy:** cài Unity Hub + Unity 6.3 LTS kèm Android Build Support (ổ D); kiểm tra điện thoại thử có hỗ trợ ARCore; cài plugin Unity cho Claude Code trên PC.
+1. **Thầy:** trong Unity Hub, thêm module *Android Build Support* (kèm OpenJDK, Android SDK & NDK) cho bản **6000.6.9f1** đã có ở `D:\Unity`; kiểm tra điện thoại thử có hỗ trợ ARCore, bật Tuỳ chọn nhà phát triển + Gỡ lỗi USB; cài plugin Unity cho Claude Code trên PC. ⏸ Chờ thầy chốt dùng 6.6 thay cho 6.3 LTS ghi trong tài liệu (đề xuất: dùng 6.6, lên 6.7 LTS khi ra).
 2. **Claude Code:** tạo `unity/ARLab` từ mẫu AR Mobile, thêm glTFast, build APK đặt một mô hình GLB lên mặt bàn (GĐ 1).
-3. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
-4. **Claude Code:** viết `pipeline/` cho 1 máy quay theo spec (GĐ 2). Việc này không cần Unity, làm song song được.
-5. **Thầy:** cài ffmpeg và `pip install scipy pandas` (cho GĐ 2); cài RealityScan 2.2 trở lên (chuẩn bị GĐ 3).
-6. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo để công khai hay riêng tư; tìm lại `ar-pipeline.zip` hay viết lại.
+3. **Thầy:** chụp ảnh bộ dụng cụ rơi tự do vào `01_Anh_Da_Goc/roi-tu-do/2026-11-15_1/` (`4-goc/` và `quet-vong/`), điền `ghi-chu.md` kèm số đo thật. Đổi tên thư mục theo ngày chụp nếu chụp hôm khác.
+4. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
+5. **Claude Code:** viết `pipeline/` cho 1 máy quay theo spec (GĐ 2). Việc này không cần Unity, làm song song được.
+6. **Thầy:** cài ffmpeg và `pip install scipy pandas` (cho GĐ 2); cài RealityScan 2.2 trở lên (chuẩn bị GĐ 3).
+7. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo để công khai hay riêng tư; tìm lại `ar-pipeline.zip` hay viết lại.
 
 ## Nhật ký
+
+### 2026-11-15 (tối) — Chuẩn bị ảnh mẫu và môi trường build (Claude Opus 5.5)
+
+- Phát hiện máy đã có **Unity 6000.6.9f1** tại `D:\Unity` (Unity Hub đặt thư mục cài là `D:\Unity`), nhưng chỉ có module Windows, **chưa có Android Build Support**.
+- Unity 6.6 là bản *Supported* (được cập nhật như LTS cho tới khi 6.7 ra); 6.7 LTS dự kiến ra quý 4/2026. Đề xuất dùng 6.6 cho GĐ 1 thay vì cài thêm 6.3 LTS, rồi nâng lên 6.7 LTS. Chưa sửa `docs/00`, `docs/04` — chờ thầy chốt.
+- Tạo thư mục phiên chụp đầu tiên `01_Anh_Da_Goc/roi-tu-do/2026-11-15_1/` gồm `4-goc/`, `quet-vong/`, `ghi-chu.md` (chép từ mẫu).
+- Ổ trống: C 18 GB, D 129,8 GB → module Android phải cài vào ổ D.
 
 ### 2026-11-15 — Khởi tạo hệ thống (Claude Fable 5.2)
 
