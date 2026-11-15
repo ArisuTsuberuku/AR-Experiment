@@ -1,0 +1,78 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:Style src="ARLab.uss" />
+  <ui:VisualElement name="goc" class="goc">
+    <ui:VisualElement name="manThuVien" class="man man-thu-vien">
+      <ui:ScrollView name="cuonThuVien" class="cuon" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
+        <ui:Label text="AR Lab" class="nhan-phu" />
+        <ui:Label text="Thí nghiệm Vật lí" class="tieu-de" />
+        <ui:TextField name="oTim" class="o-tim" placeholder-text="Tìm thí nghiệm…" />
+        <ui:VisualElement name="dongChip" class="dong-chip" />
+        <ui:Label name="trangThai" text="Đang nạp danh sách thí nghiệm…" class="trang-thai" />
+        <ui:VisualElement name="danhSach" class="danh-sach" />
+      </ui:ScrollView>
+      <ui:VisualElement class="thanh-duoi">
+        <ui:Label text="Thư viện" class="tab-duoi tab-duoi--chon" />
+        <ui:Label text="Đã tải" class="tab-duoi" />
+        <ui:Label text="Bài học" class="tab-duoi" />
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="manChiTiet" class="man man-chi-tiet an">
+      <ui:VisualElement name="khung3D" class="khung-3d">
+        <ui:VisualElement class="hang-tren">
+          <ui:Button name="nutQuayLai" text="‹" class="nut-tron" />
+          <ui:Label text="Xem 3D · camera tắt" class="chip-trang-thai" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:Label name="dangNap" text="Đang nạp mô hình…" class="dang-nap" picking-mode="Ignore" />
+      </ui:VisualElement>
+      <ui:VisualElement class="bang-chi-tiet">
+        <ui:Label name="tieuDeChiTiet" class="tieu-de-nho" />
+        <ui:Label name="phuDeChiTiet" class="nhan-phu" />
+        <ui:VisualElement class="dong-tab">
+          <ui:Button name="tabBoPhan" text="Bộ phận" class="tab tab--chon" />
+          <ui:Button name="tabThongSo" text="Thông số" class="tab" />
+          <ui:Button name="tabNguon" text="Nguồn" class="tab" />
+        </ui:VisualElement>
+        <ui:ScrollView name="noiDungTab" class="noi-dung-tab" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" />
+        <ui:Button name="nutAR" text="Đặt vào không gian (AR)" class="nut-chinh" />
+        <ui:Label name="ghiChuAR" text="Camera chỉ bật khi bạn bấm nút này" class="ghi-chu" />
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="manAR" class="man man-ar an">
+      <ui:VisualElement name="vungChamAR" class="vung-cham" />
+      <ui:VisualElement name="lopNhan" class="lop-nhan" picking-mode="Ignore" />
+      <!-- lớp tạm dừng đứng trước để nút × và chip trạng thái vẫn nổi bên trên -->
+      <ui:VisualElement name="lopTamDung" class="lop-tam-dung an">
+        <ui:VisualElement class="the-tam-dung">
+          <ui:Label text="Đã tắt camera để tiết kiệm pin" class="tieu-de-nho" />
+          <ui:Label text="Không có thao tác trong 2 phút, hoặc app đã chuyển sang nền." class="chu-huong-dan" />
+          <ui:Button name="nutBatLai" text="Bật lại camera" class="nut-chinh" />
+        </ui:VisualElement>
+      </ui:VisualElement>
+      <ui:VisualElement class="hang-tren" picking-mode="Ignore">
+        <ui:Button name="nutDongAR" text="×" class="nut-tron" />
+        <ui:Label name="chipAR" text="Đang khởi động AR…" class="chip-trang-thai" picking-mode="Ignore" />
+      </ui:VisualElement>
+      <ui:VisualElement class="cum-duoi" picking-mode="Ignore">
+        <ui:VisualElement name="theHuongDan" class="the-huong-dan">
+          <ui:Label name="huongDanAR" class="chu-huong-dan" />
+          <ui:Button name="nutDatAR" text="Đặt ở đây" class="nut-chinh" />
+          <ui:Label text="Tự tắt camera sau 2 phút không thao tác" class="ghi-chu" />
+        </ui:VisualElement>
+        <ui:VisualElement name="bangDuoi" class="bang-duoi an">
+          <ui:VisualElement class="hang-bang">
+            <ui:Label name="tieuDeBang" class="tieu-de-bang" />
+            <ui:Button name="nutDongBang" text="×" class="nut-dong-bang" />
+          </ui:VisualElement>
+          <ui:Label name="noiDungBang" class="chu-huong-dan" />
+        </ui:VisualElement>
+        <ui:VisualElement name="thanhCongCu" class="thanh-cong-cu an">
+          <ui:Button name="nutTiLe" text="Tỉ lệ 1:1" class="nut-cong-cu" />
+          <ui:Button name="nutChuThich" text="Chú thích" class="nut-cong-cu" />
+          <ui:Button name="nutTachRoi" text="Tách rời" class="nut-cong-cu" />
+          <ui:Button name="nutChup" text="Chụp" class="nut-cong-cu" />
+          <ui:Button name="nutThongTin" text="Thông tin" class="nut-cong-cu" />
+        </ui:VisualElement>
+      </ui:VisualElement>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

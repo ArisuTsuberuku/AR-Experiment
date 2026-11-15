@@ -13,7 +13,7 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 1. **Thầy:** cài lại `work/build/ARLab.apk` (15/11 22:22, 40,6 MB); xem chất liệu đế và cột dẫn dưới ánh sáng thật; báo lại chỗ còn "giả".
 2. **Thầy:** đo đèn (đường kính đáy đế, chiều cao tới đỉnh dây đỡ) và thấu kính (đường kính đĩa đen, đường kính phần kính, chiều cao đế).
 3. **Thầy:** góp ý mockup app v0.2 trên canvas Design "AR Lab — Mockup giao diện app" (5 màn hình; màn 5 kéo được thanh trượt).
-4. **Claude Code:** làm phiếu `docs/handoff/2026-11-15-app-v02-giao-dien-va-thau-kinh.md` (app v0.2: thư viện, xem 3D không bật camera, XR nạp theo yêu cầu, tự dừng 2 phút, UI Toolkit, ánh sáng + bóng đổ, thấu kính 2 cụm tách rời).
+4. **Thầy:** thử APK v0.2 bước 3 trên điện thoại (thanh công cụ AR, tách rời thấu kính, nhìn qua kính, Chụp, bóng đổ); trả lời 2 câu hỏi ở mục 6 phiếu app v0.2. Cowork đóng phiếu sau khi thầy thử.
 5. **Thầy quyết định ⏸:** thêm thông số quang học (f, n) và lớp phủ tia sáng vào định dạng gói (đổi schema).
 6. **Cowork / Claude Code:** chạy lại 2 script Blender với số đo thật; build lại APK.
 7. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại, chép vào `02_Video_Goc/roi-tu-do/<ngày>_1/` kèm `ghi-chu.md`; Cowork viết `docs/specs/roi-tu-do.md`.
@@ -22,6 +22,89 @@ Mọi agent cập nhật file này khi mở và đóng phiên (xem `AGENTS.md`).
 10. **Thầy quyết định ⏸:** dự án Firebase tạo mới hay dùng chung; repo công khai hay riêng tư.
 
 ## Nhật ký
+
+### 2026-11-16 (03:00) — App v0.2 bước 3/3 xong: thanh công cụ AR, thấu kính 2 cụm, kính khúc xạ, ánh sáng + bóng (Claude Code)
+
+Thầy đổi phạm vi: làm thêm **hiệu ứng quang học khi nhìn qua thấu kính** cùng bước 3 (phiếu ghi hoãn). Lớp phủ tia sáng (màn 5) vẫn để sau.
+
+Đã làm:
+
+- `ManHinhAR`: kéo xoay, chụm phóng, chạm mặt phẳng dời chỗ; thanh công cụ Tỉ lệ 1:1 · Chú thích (nhãn bám bộ phận) · Tách rời (nâng `ThauKinh` 4 cm / 0,4 s; kéo dọc 0–6 cm) · Chụp (vào Thư viện ảnh) · Thông tin; ước lượng ánh sáng ARCore HDR.
+- Kính `ARLab/KinhKhucXa`: nhìn qua kính thấy nền phóng / lật theo thấu kính mỏng, k = 1 − D·L / (f·(L + D)); f, n đọc từ `extras` của nút `ThauKinh` trong GLB.
+- Bóng `ARLab/BongDo`: mặt phẳng trong suốt dưới mô hình. URP: bật Opaque Texture, bóng 3 m, bóng mềm, **nhận bóng cho vật trong suốt** (renderer Mobile đang tắt — nguyên nhân bóng không hiện lúc đầu).
+- Lệnh `ARLabSetup.ChupGiaoDien` chụp giao diện thành PNG + tự kiểm chiều ảnh qua kính bằng tấm hình mẫu (d = 0,1 m cùng chiều; d = 0,6 m ngược chiều).
+- Mục 6 phiếu `docs/handoff/2026-11-15-app-v02-giao-dien-va-thau-kinh.md` đã ghi; `unity/README.md` cập nhật.
+
+Kiểm tra: `ARLAB_KIEMTRA OK` (27), `ARLAB_KIEMTRA_AR OK` (33), `ARLAB_CHUP xong 0` + khúc xạ `DUNG` 2 trường hợp (32), `ARLAB_BUILD Succeeded` 0 lỗi, APK 35,6 MB, ARCore `required`, không có `depth` (34). **Chưa thử bản này trên điện thoại** (adb báo unauthorized, chờ thầy bấm cho phép).
+
+### 2026-11-16 (02:35) — Thầy xác nhận app v0.2 (bước 1–2) chạy trên điện thoại (Claude Code)
+
+Thầy mở bản cài lúc 02:30 trên Sony SOG06: giao diện hiện, chạy tốt. Còn chờ bước 3 của phiếu.
+
+### 2026-11-16 (02:30) — Sửa lỗi app v0.2 mở ra màn đen sau logo Unity (Claude Code)
+
+Thầy cài APK bước 2 lên điện thoại (Sony SOG06, Android 14): sau "Made by Unity" màn hình đen.
+
+Tìm nguyên nhân:
+
+- `work/logs/19-logcat-man-den.log` (adb logcat): không có lỗi hay ngoại lệ; app vẫn chạy nhưng không vẽ gì.
+- Thêm `ARLabSetup.ChupGiaoDien`: chạy cảnh trong Play Mode, vẽ giao diện vào ảnh PNG và ghi trạng thái phần tử. Lần đầu chạy, `UIDocument.panelSettings` = null; file cảnh lưu `m_PanelSettings: {fileID: 0}`.
+- **Nguyên nhân 1:** `BuildScene` nạp PanelSettings trước `EditorSceneManager.NewScene(... Single)`. Mở cảnh mới thì Unity gỡ các asset không được tham chiếu, nên cảnh lưu ra mà không có PanelSettings → UI Toolkit không vẽ. Sửa: nạp asset sau `NewScene`; `BuildScene` báo lỗi nếu cảnh lưu thiếu PanelSettings.
+- **Nguyên nhân 2:** theme riêng `ARLab.tss` thiếu quy tắc kéo giãn gốc UIDocument (theme mặc định của Unity vẫn có), nên giao diện cao 0. Sửa: thêm `.unity-ui-document__root` (absolute, giãn 4 cạnh). Thêm căn giữa chữ cho nút, lề cho nội dung thư viện.
+
+Kiểm tra:
+
+- `work/logs/24-chup.log` + ảnh `work/logs/18-chup-thu-vien.png`, `18-chup-chi-tiet.png`: thư viện hiện đủ 3 thẻ có ảnh, phông tiếng Việt đúng; màn chi tiết hiện mô hình đèn, 8 bộ phận, nút AR.
+- `work/logs/25-build-sua-man-den.log`: `ARLAB_BUILD Succeeded`, 0 lỗi. Đã cài lên điện thoại bằng `adb install -r` (02:30); chưa thấy thầy mở thử.
+
+Bài học: kiểm tra phải gồm **nhìn thấy giao diện** (ảnh chụp), không chỉ log của lớp nạp gói và XR.
+
+### 2026-11-16 (02:20) — App v0.2 bước 2/3 xong: kiểm tra và build sạch (Claude Code)
+
+Thầy đã đăng nhập lại Unity Hub; Unity chạy nền được.
+
+- Sửa `ARLabSetup.KiemTraAR`: dự án tắt Reload Domain khi vào Play, nên đăng ký trình theo dõi ngay khi gọi lệnh (lượt đầu bị treo trong Play Mode, `work/logs/15-kiemtra-ar.log`, đã dừng).
+- `work/logs/16-kiemtra-ar.log`: `ARLAB_KIEMTRA_AR OK` — mở app XR chưa nạp, không có ARSession; vào màn AR: SimulationLoader nạp, `ARSession.state = SessionTracking`, camera xem 3D tắt; rời màn: XR gỡ hẳn, camera xem 3D bật lại; đúng cả 2 lượt.
+- Xoá `Library/Bee/Android/Prj/IL2CPP/Gradle`, build sạch: `work/logs/17-build-v02-buoc2.log` — `ARLAB_BUILD Succeeded`, 0 lỗi, 1 phút 37 giây. APK 35,3 MB; `aapt`: 0.2.0 (mã 2), minSdk 26, ARCore `required`, không có `com.google.ar.core.depth`, `SkipPermissionsDialog` = true, không có tệp XR Simulation trong APK.
+
+Chưa thử:
+
+- Trên điện thoại: quyền camera chỉ hỏi lần đầu bấm "Đặt vào không gian (AR)", vòng ngắm, "Đặt ở đây", tự tắt sau 2 phút, app vào nền.
+- Trong XR Simulation lượt kiểm tra không thấy mặt phẳng nào sau 5 giây (camera mô phỏng đứng yên), nên vòng ngắm và "Đặt ở đây" chưa được thử tự động. Thầy có thể thử trong Editor: Play → mở thí nghiệm → bấm AR, giữ chuột phải + W/A/S/D để đi lại trong phòng mô phỏng.
+
+### 2026-11-16 (02:05) — App v0.2 bước 2/3: XR nạp theo yêu cầu, tự tắt sau 2 phút — đã viết mã, CHƯA kiểm tra (Claude Code)
+
+Đã viết (chưa biên dịch được, xem phần Kẹt):
+
+- `Assets/Scripts/PhienAR.cs`: vào màn AR thì `InitializeLoader` → `StartSubsystems` → tạo khung AR (AR Session + XR Origin) từ prefab `Assets/Prefabs/KhungAR.prefab`; rời màn AR thì huỷ khung → `StopSubsystems` → `DeinitializeLoader`. Camera xem 3D tắt khi AR chạy.
+- `Assets/UI/ManHinhAR.cs` + màn `manAR` trong `ARLab.uxml`: nút ×, chip trạng thái ("Đang tìm mặt bàn…", "Đã thấy mặt bàn"), vòng ngắm xanh lơ ở giữa màn hình, thẻ hướng dẫn với nút "Đặt ở đây" và dòng "Tự tắt camera sau 2 phút không thao tác". Sau 120 giây không chạm, hoặc khi app vào nền: tắt hẳn AR, hiện "Đã tắt camera để tiết kiệm pin" + nút "Bật lại camera". Nút Back của Android rời màn AR.
+- `ARLabSetup`: Android dùng ARCore, Standalone dùng XR Simulation (chỉ để thử trong Editor), cả hai `InitManagerOnStart = false`; dựng prefab khung AR, vật liệu vòng ngắm; thêm `ARLabSetup.KiemTraAR` (Play Mode + XR Simulation, bật/tắt AR 2 lượt, kiểm tra XR được gỡ hẳn).
+- Bỏ `ARLabPlacer.cs` (IMGUI của bản 0.1); xoay, chụm, tỉ lệ 1:1 sẽ viết lại trong `ManHinhAR` ở bước 3.
+
+Kẹt: Unity chạy nền thoát mã 198 — "No valid Unity Editor license found" ("Access token is unavailable"), 2 lần (`work/logs/14-kiemtra-ar.log`). Phiên đăng nhập Unity Hub hết hạn; tối 15/11 vẫn chạy được.
+
+Tiếp: thầy mở Unity Hub, đăng nhập lại, kiểm tra giấy phép Personal còn hiệu lực → Claude Code chạy `ARLabSetup.KiemTraAR`, sửa lỗi nếu có, xoá `Library/Bee/Android/Prj/IL2CPP/Gradle`, build sạch, kiểm tra APK bằng `aapt`.
+
+### 2026-11-15 (23:00) — App v0.2 bước 1/3: nạp gói, thư viện, xem 3D không bật camera (Claude Code)
+
+Làm theo phiếu `docs/handoff/2026-11-15-app-v02-giao-dien-va-thau-kinh.md`; thầy đã duyệt kế hoạch 3 bước.
+
+Đã làm:
+
+- `Assets/Scripts/GoiThiNghiem.cs`: lớp nạp gói `KhoGoi` đọc `catalog.json` (theo docs/05 mục 5) → `experiment.json` → `media/thumb.png` → `model/scene.glb` (glTFast lúc chạy). Mọi file tải qua `UnityWebRequest` từ `KhoGoi.Goc`; GĐ 5 chỉ đổi `Goc` sang URL máy chủ.
+- Giao diện UI Toolkit `Assets/UI/` (bỏ IMGUI ở màn mới): màn Thư viện (tìm kiếm, chip Tất cả / Điện / Quang / Cơ, thẻ lớn + lưới thẻ nhỏ, "Rơi tự do" hiện "Sắp có" vì gói chưa có mô hình) và màn Chi tiết 3D (chip "Xem 3D · camera tắt", tab Bộ phận / Thông số / Nguồn, chiều cao mô hình theo cm). Phông Be Vietnam Pro (OFL) trong `Assets/UI/Fonts/`.
+- `XemMoHinh3D.cs`: camera thường, kéo xoay, chụm / lăn chuột phóng to, giới hạn góc −5…80° và khoảng cách 1,2–6 lần bán kính mô hình. Nút Back của Android quay về thư viện.
+- `BangTenBoPhan.cs`: tên bộ phận theo tên nút GLB, đặt tạm trong app (không đụng `experiment.json`).
+- `ARLabSetup`: chép gói từ `experiments/` vào `StreamingAssets`, giữ biến thể shader glTFast bằng vật liệu mẫu trong `Resources/BienTheShader`, PanelSettings 390 × 844, dựng cảnh mới không có XR, tắt "Initialize XR on Startup", phiên bản 0.2.0 (mã 2). Thêm `ARLabSetup.KiemTra` để tự kiểm tra lớp nạp gói ở chế độ nền.
+- `unity/ARLab/.gitignore`: các thư mục chép sinh ra không vào git; bỏ `Assets/Models/den-soi-dot` khỏi git.
+
+Kiểm tra:
+
+- `work/logs/12-kiemtra-goi.log`: `ARLAB_KIEMTRA OK` — đọc 3 gói; đèn cao 15,1 cm (12 renderer, 8 bộ phận); thấu kính cao 17,8 cm (10 renderer, có `DeKep`, `ThauKinh`, `TamQuang`); ảnh thumb 512 × 512.
+- `work/logs/13-build-v02-buoc1.log`: `ARLAB_BUILD Succeeded`, 0 lỗi, 2 phút 9 giây. APK 35,3 MB; `aapt`: versionName 0.2.0, minSdk 26, ARCore `required`, không có `com.google.ar.core.depth`, `SkipPermissionsDialog` = true.
+- **Chưa** chạy Play Mode và chưa thử trên điện thoại: giao diện cần thầy xem (menu AR Lab → 1, mở cảnh `ARLab`, Play).
+
+Ghi chú: nút "Đặt vào không gian (AR)" đang mờ, bật ở bước 2. Băng báo gói mới (nút "Tải") và nút chia sẻ của mockup chưa làm vì chưa có nguồn gói trên mạng.
 
 ### 2026-11-15 (22:45) — Thấu kính tách 2 cụm, phiếu giao app v0.2 (Claude Opus 5.5)
 

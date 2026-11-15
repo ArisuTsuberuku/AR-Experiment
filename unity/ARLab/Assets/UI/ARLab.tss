@@ -1,0 +1,14 @@
+:root {
+  -unity-font-definition: url("project://database/Assets/UI/Fonts/BeVietnamPro-Regular.ttf");
+  color: #F2F4F7;
+  font-size: 15px;
+}
+
+/* Theme mặc định của Unity vẫn kéo giãn gốc UIDocument ra cả màn hình; theme riêng phải tự làm (thiếu thì UI cao 0). */
+.unity-ui-document__root {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}

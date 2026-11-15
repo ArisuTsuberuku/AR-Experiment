@@ -68,7 +68,23 @@ Phong cách: nền tối `#0E1116`, chữ `#F2F4F7`, chữ phụ `#9AA4B2`, màu
 
 ## 6. Kết quả (agent nhận ghi)
 
+Claude Code, 15–16/11/2026, làm theo 3 bước thầy duyệt. **Thầy đổi phạm vi (16/11):** làm thêm hiệu ứng quang học khi nhìn qua thấu kính cùng bước 3 (mục 5 ghi hoãn). Lớp phủ tia sáng (màn 5) vẫn để phiếu sau.
+
 - Đã làm:
-- File sinh ra:
-- Kiểm tra đã chạy và kết quả:
+  - Bước 1: lớp nạp gói `KhoGoi` theo `catalog.json` (docs/05 mục 5), mọi file qua `UnityWebRequest` từ `KhoGoi.Goc` (đổi sang Firebase chỉ đổi `Goc`); 3 gói đóng sẵn vào `StreamingAssets/experiments/`. UI Toolkit: màn Thư viện (tìm kiếm, chip lọc, thẻ lớn/nhỏ, "Rơi tự do" hiện "Sắp có" vì gói chưa có mô hình) và màn Chi tiết 3D bằng camera thường (kéo xoay, chụm phóng, giới hạn góc −5…80° và khoảng cách). Phông Be Vietnam Pro (OFL). Bỏ IMGUI.
+  - Bước 2: tắt "Initialize XR on Startup"; `PhienAR` nạp XR khi vào màn AR (`InitializeLoader` → `StartSubsystems`) và gỡ khi rời (×, Back, app vào nền: `StopSubsystems` → `DeinitializeLoader`). 2 phút không chạm: tắt AR, hiện "Đã tắt camera để tiết kiệm pin" + nút bật lại. Màn tìm mặt phẳng: vòng ngắm xanh lơ, "Đặt ở đây".
+  - Bước 3: thanh công cụ Tỉ lệ 1:1 · Chú thích · Tách rời · Chụp · Thông tin; kéo xoay, chụm phóng, chạm mặt phẳng để dời. Chú thích: nhãn bám bộ phận theo tên nút GLB, tên hiển thị trong bảng `BangTenBoPhan` của app. Tách rời: nâng `ThauKinh` 4 cm trong 0,4 s, bấm lần nữa hạ lại; kéo dọc trên cụm thấu kính để chỉnh 0–6 cm; đèn sợi đốt (1 cụm) nút mờ. Chụp: ẩn giao diện, lưu PNG vào Thư viện ảnh (Android 10+ MediaStore; 8–9 xin quyền ghi bộ nhớ). Ước lượng ánh sáng ARCore (chế độ HDR: hướng, màu, cường độ đèn chính, ánh sáng môi trường). Bóng đổ lên mặt phẳng trong suốt dưới mô hình. Chip "x1,00 · cao 17,8 cm" theo tỉ lệ.
+  - Kính: shader `ARLab/KinhKhucXa` thay vật liệu `ThuyTinh` — trong suốt, và nhìn qua kính thấy nền (camera AR + cảnh) phóng / lật theo thấu kính mỏng: hệ số k = 1 − D·L / (f·(L + D)) với L mắt → kính, D kính → nền (raycast tới mặt phẳng AR phía sau kính, không có thì 1,5 m). f, n đọc từ `extras` của nút `ThauKinh` trong GLB (chỉ hiển thị và vẽ kính, không đụng `experiment.json`).
+  - Sửa lỗi màn đen (16/11, thầy phát hiện trên máy): PanelSettings bị gỡ khi `NewScene` nên cảnh lưu thiếu; theme riêng thiếu quy tắc kéo giãn gốc UIDocument.
+- File sinh ra: `unity/ARLab/Assets/Scripts/{GoiThiNghiem, XemMoHinh3D, BangTenBoPhan, PhienAR, ThauKinhKhucXa, ChupAnh}.cs`; `Assets/UI/{ARLab.uxml, ARLab.uss, ARLab.tss, ARLab_PanelSettings.asset, AppARLab.cs, ManHinhAR.cs, Fonts/}`; `Assets/Shaders/{KinhKhucXa, BongDo}.shader`; `Assets/Prefabs/KhungAR.prefab`; `Assets/Materials/{VongNgam, BongDo}.mat`; `unity/ARLab/.gitignore`; sửa `Assets/Editor/ARLabSetup.cs`, `unity/README.md`. Bỏ `ARLabPlacer.cs` và bản chép `Assets/Models/den-soi-dot` khỏi git.
+- Kiểm tra đã chạy và kết quả (log trong `work/logs/`, không vào git):
+  - `ARLabSetup.KiemTra` (27): `ARLAB_KIEMTRA OK` — 3 gói; đèn cao 15,1 cm, thấu kính 17,8 cm, có `DeKep`/`ThauKinh`/`TamQuang`, đọc được f = 0,2 m.
+  - `ARLabSetup.KiemTraAR` (16, 33): `ARLAB_KIEMTRA_AR OK` — mở app XR chưa nạp; vào AR nạp (XR Simulation, `SessionTracking`); rời AR gỡ hẳn; 2 lượt.
+  - `ARLabSetup.ChupGiaoDien` (32): ảnh thư viện, chi tiết, thấu kính, AR, tách rời + chú thích; tấm hình mẫu sau kính: d = 0,1 m ảnh cùng chiều, d = 0,6 m ảnh ngược chiều (tự kiểm màu điểm ảnh, `DUNG`).
+  - Build (34): `ARLAB_BUILD Succeeded`, 0 lỗi, APK 35,6 MB; `aapt`: 0.2.0, minSdk 26, ARCore `required`, không có `com.google.ar.core.depth`. Quyền: CAMERA (xin khi vào AR lần đầu), WRITE/READ_EXTERNAL_STORAGE (chỉ dùng trên Android 8–9 khi bấm Chụp).
+  - Điện thoại (Sony SOG06, Android 14): bản bước 1–2 thầy đã chạy tốt. **Bản bước 3 chưa thử trên máy.**
 - Chưa làm được / cần hỏi:
+  - Mockup chưa làm: băng báo gói mới (nút "Tải"), nút chia sẻ, nút tạm dừng AR riêng (đã có × và tự tắt), bảng giải thích bộ phận (gói chưa có nội dung giải thích; bảng chỉ hiện tên).
+  - Kính: một khoảng cách nền D cho cả mặt kính; vật nền không phải mặt phẳng (tường, đồ vật) thì D lấy 1,5 m. Muốn đúng từng điểm cần ARCore Depth (máy có hỗ trợ). Không làm nhoè khi ảnh gần mắt.
+  - Hỏi: "độ cao que 0–6 cm trên mặt đế" — em hiểu là nâng thêm 0–6 cm so với lúc lắp (que vốn nhô 1,2 cm). Nếu thầy muốn là độ nhô tuyệt đối thì đổi khoảng thành −0,36…+4,8 cm.
+  - Hỏi ⏸: đưa f, n và tên/giải thích bộ phận vào `experiment.json` (đổi schema) để bỏ bảng tra trong app.

@@ -1,0 +1,7 @@
+# Sinh ra bởi ARLabSetup (chép từ experiments/), không vào git
+/Assets/StreamingAssets/
+/Assets/StreamingAssets.meta
+/Assets/Models/
+/Assets/Models.meta
+/Assets/Resources/
+/Assets/Resources.meta
