@@ -1,6 +1,6 @@
 # AR Experiment — Lộ trình
 
-Cập nhật: 15/11/2026
+Cập nhật: 15/11/2026 (tối: chốt Unity 6.6, mô hình đèn sợi đốt)
 
 Mỗi giai đoạn có một kết quả kiểm được và một agent chủ trì. Trạng thái dùng 4 giá trị: `xong`, `dang-lam`, `ke-tiep`, `cho`. Bối cảnh hệ thống: [Tổng quan](00-TONG-QUAN-HE-THONG.md). Vai trò các agent: [Quy ước đa agent](02-QUY-UOC-DA-AGENT.md).
 
@@ -9,9 +9,9 @@ Mỗi giai đoạn có một kết quả kiểm được và một agent chủ t
 | GĐ | Tên | Kết quả phải có | Tiêu chí nghiệm thu | Chủ trì | Trạng thái |
 |---|---|---|---|---|---|
 | 0 | Nền móng | Repo, kho dữ liệu, bộ tài liệu, quy ước agent, bản sao vault | Repo đẩy lên GitHub; `tools/sync_vault.py --check` báo khớp | Fable 5.2 | `xong` |
-| 1 | Môi trường và app khung | Unity 6.3 LTS + Android Build Support; dự án `unity/ARLab`; APK đặt được một mô hình GLB lên mặt bàn | Trên điện thoại thật: mô hình đứng yên khi đi một vòng 360°, kích thước lệch không quá 5 % so với số đo | Claude Code | `ke-tiep` |
+| 1 | Môi trường và app khung | Unity 6.6 + Android Build Support; dự án `unity/ARLab`; APK đặt được mô hình đèn sợi đốt (GLB) lên mặt bàn | Trên điện thoại thật: mô hình đứng yên khi đi một vòng 360°, kích thước lệch không quá 5 % so với số đo | Claude Code | `dang-lam` — APK đã build, chờ thử trên điện thoại |
 | 2 | Đo từ video (1 máy quay) | `pipeline/` chạy trọn: nhập liệu → hiệu chuẩn → theo dõi → khớp mô hình; gói `roi-tu-do` có quỹ đạo và giá trị g | g đo được lệch không quá 2 % so với 9,8 m/s²; có sai số; chạy lại ra cùng kết quả | Claude Code (mã), Cowork (spec, kiểm số) | `cho` |
-| 3 | Mô hình 3D từ ảnh đa góc | Mô hình tĩnh của bộ rơi tự do, đúng tỉ lệ mét, GLB dưới 10 MB | Kích thước lệch không quá 2 % so với thước; soát hình đạt ở 4 hướng | Antigravity Argon (dựng, soát hình), Cowork (phiếu) | `cho` |
+| 3 | Mô hình 3D từ ảnh đa góc | Mô hình tĩnh đúng tỉ lệ mét, GLB dưới 10 MB. Bản đầu: đèn sợi đốt (dựng bằng script Blender), sau đó bộ rơi tự do | Kích thước lệch không quá 2 % so với thước; soát hình đạt ở 4 hướng | Antigravity Argon (dựng, soát hình), Cowork (phiếu) | `dang-lam` — đèn sợi đốt bản 0.1.0, chờ số đo thật |
 | 4 | Trình phát thí nghiệm trong AR | App đọc gói, phát chuyển động: tốc độ thật, quay chậm, dừng từng khung; lớp phủ vệt, vectơ, đồ thị | Vị trí vật trong AR khớp file quỹ đạo ở mọi thời điểm kiểm tra; xem được 360° | Claude Code | `cho` |
 | 5 | Phân phối nội dung | Firebase Hosting chứa `catalog.json` và gói; app tải, lưu đệm, báo bản mới | Thêm một gói mới lên máy chủ → app đã cài thấy và chạy được, không build lại | Claude Code (app), Cowork (quy trình phát hành) | `cho` |
 | 6 | Kiểm chứng và công bố sai số | Ảnh chồng cảnh dựng lên video gốc; bảng sai số trong gói | Sai số chiếu ngược được ghi trong `provenance`; báo cáo trong `docs/reports/` | Cowork (số liệu), Argon (soát hình) | `cho` |
@@ -23,9 +23,9 @@ GĐ 2 và GĐ 3 độc lập với nhau, có thể làm song song sau GĐ 1. GĐ
 
 ## Việc kế tiếp (theo thứ tự)
 
-1. **Thầy:** cài Unity Hub, rồi Unity 6.3 LTS kèm *Android Build Support* (gồm OpenJDK, Android SDK & NDK). Kiểm tra điện thoại thử nghiệm có trong danh sách hỗ trợ ARCore.
-2. **Thầy:** cài plugin Unity cho Claude Code trên máy (plugin đang bật ở tài khoản claude.ai, bản Claude Code trên PC cần cài riêng).
-3. **Claude Code:** tạo dự án `unity/ARLab` từ mẫu AR Mobile (dùng skill `unity:new-unity-project`), thêm glTFast, build APK thử. → GĐ 1.
+1. **Thầy:** cài `work/build/ARLab.apk` lên điện thoại Android có ARCore, thử đặt mô hình đèn sợi đốt; đo đường kính đáy đế thật. → nghiệm thu GĐ 1.
+2. **Cowork / Claude Code:** chạy lại script Blender với số đo thật, sửa đoạn dây đỡ, build lại APK.
+3. **Thầy:** cài plugin Unity cho Claude Code trên máy để các phiên sau điều khiển được Unity Editor.
 4. **Thầy + Cowork:** quay thử rơi tự do bằng 1 điện thoại theo phiếu ghi trong `02_Video_Goc/_MAU_ghi-chu-phien-quay.md`; Cowork viết `docs/specs/roi-tu-do.md`.
 5. **Claude Code:** viết `pipeline/` cho trường hợp 1 máy quay theo spec. → GĐ 2.
 6. **Thầy:** cài ffmpeg; cài RealityScan (bản 2.2 trở lên hỗ trợ card AMD trên Windows, cần kiểm tra RX 9060 XT có trong danh sách). → chuẩn bị GĐ 3.

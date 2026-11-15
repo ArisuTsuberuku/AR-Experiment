@@ -34,7 +34,8 @@ Khảo sát ngày 15/11/2026 trên máy HOANGLINH-PC và tài khoản claude.ai 
 
 | Phần mềm | Phiên bản | Dùng vào |
 |---|---|---|
-| Blender | 5.1.2 (`D:\Blender`) | Hậu kỳ mô hình: tỉ lệ, gốc toạ độ, giảm lưới, xuất GLB |
+| Unity Editor | 6000.6.9f1 (`D:\Unity`) + Android Build Support (SDK, NDK, OpenJDK) | Dựng app AR, build APK |
+| Blender | 5.1.2 (`D:\Blender`) | Dựng mô hình bằng script, hậu kỳ, xuất GLB, render so hình |
 | Python | 3.14.4, có OpenCV 4.14.0, numpy, matplotlib | Pipeline |
 | Node.js | 24.14.1 | Firebase CLI |
 | Firebase CLI | có trong PATH | Triển khai Hosting |
@@ -45,8 +46,6 @@ Khảo sát ngày 15/11/2026 trên máy HOANGLINH-PC và tài khoản claude.ai 
 
 | Thứ cần | Để làm gì | Giai đoạn | Ghi chú |
 |---|---|---|---|
-| **Unity Hub + Unity 6.3 LTS** kèm Android Build Support | Dựng app | GĐ 1 | Cài ở ổ D (ổ C còn ít chỗ). Bản LTS 6.3 hiện là 6000.3.x |
-| **AR Foundation 6.3 + Google ARCore XR Plugin** (cùng phiên bản), **glTFast** | AR, đọc GLB lúc chạy | GĐ 1 | Cài qua Package Manager sau khi có dự án |
 | **Điện thoại Android có ARCore** | Thử app | GĐ 1 | Kiểm tra trong danh sách thiết bị hỗ trợ ARCore |
 | **Plugin Unity cho Claude Code trên PC** | Claude Code điều khiển Unity | GĐ 1 | Bản trên claude.ai không tự có ở Claude Code máy trạm |
 | **ffmpeg** | Tách khung hình, đọc thông tin video | GĐ 2 | Ví dụ `winget install Gyan.FFmpeg` |
@@ -66,7 +65,7 @@ Lưu ý phần cứng: máy dùng card AMD. Meshroom và bước dựng dày c�
 
 ## 4. Thứ tự cài đề xuất
 
-1. Unity Hub → Unity 6.3 LTS + Android Build Support (GĐ 1).
+1. ~~Unity + Android Build Support~~ — xong 15/11/2026 (Unity 6.6, AR Foundation 6.6.2, ARCore 6.6.2, glTFast 6.21.0 trong dự án).
 2. Plugin Unity cho Claude Code trên PC.
 3. ffmpeg và hai thư viện Python còn thiếu (GĐ 2 — không phụ thuộc Unity).
 4. RealityScan (GĐ 3).

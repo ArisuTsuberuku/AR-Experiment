@@ -36,10 +36,11 @@ AR-Experiment/
 │   ├── 6_dong_goi/           Xuất gói theo định dạng chung
 │   └── 7_kiem_chung/         Chiếu ngược, so với video gốc
 ├── experiments/              Gói thí nghiệm (đầu ra của pipeline, vào git)
+│   ├── den-soi-dot/         Mô hình cấu tạo đèn sợi đốt (mô hình tĩnh)
 │   └── roi-tu-do/
 │       ├── experiment.json
 │       ├── model/  tracks/  media/
-├── unity/                    Dự án Unity (tạo ở GĐ 1: unity/ARLab)
+├── unity/ARLab/              Dự án Unity 6.6 (URP + AR Foundation), xem unity/README.md
 ├── firebase/                 Cấu hình hosting, catalog.json
 ├── tools/                    sync_vault.py, kiem_tra_may.py
 └── work/                     Vùng làm việc tạm — KHÔNG vào git
@@ -79,6 +80,7 @@ Quy tắc của kho:
 - Phiên nào cũng có `ghi-chu.md` (chép từ file mẫu). Thiếu phiếu ghi thì pipeline không có số đo thật để đặt tỉ lệ.
 - Mã thí nghiệm viết thường, không dấu, nối bằng `-`, dùng chung ở mọi nơi: `roi-tu-do`, `con-lac-don`, `nem-ngang`.
 - Video có mặt học sinh để ở kho này, không đưa lên repo công khai.
+- Ngoại lệ đã có: 26 ảnh mô hình đèn sợi đốt nằm thẳng trong `01_Anh_Da_Goc/Den-soi-dot/` (phiên 15/11/2026, không có thư mục phiên). Giữ nguyên; các phiên sau theo đúng cấu trúc trên.
 
 ## 3. Vault Obsidian
 

@@ -1,6 +1,6 @@
 # AR Experiment — Tổng quan hệ thống
 
-Cập nhật: 15/11/2026 · Phiên khởi tạo (Claude Fable 5.2)
+Cập nhật: 15/11/2026 · Phiên khởi tạo (Claude Fable 5.2); chốt Unity 6.6 và mô hình đầu tiên (Claude Opus 5.5)
 
 Tài liệu này là điểm vào của dự án. Đọc xong sẽ biết hệ thống gồm những khối nào, dữ liệu đi từ đâu tới đâu, cái gì đã chốt và cái gì còn mở. Việc cụ thể theo giai đoạn nằm ở [Lộ trình](01-LO-TRINH.md); cách các agent phối hợp nằm ở [Quy ước đa agent](02-QUY-UOC-DA-AGENT.md).
 
@@ -52,7 +52,7 @@ flowchart LR
 | B. Pipeline | Repo `pipeline/`, vùng làm việc `work/` | Python + OpenCV, ffmpeg, RealityScan hoặc AI tạo 3D, Blender |
 | C. Gói thí nghiệm | Repo `experiments/<mã>/` | JSON, GLB, CSV |
 | D. Phân phối | Firebase Hosting | Firebase CLI / plugin Firebase |
-| E. App | Repo `unity/` | Unity 6.3 LTS, AR Foundation, ARCore, glTFast |
+| E. App | Repo `unity/ARLab` | Unity 6.6 (6000.6.9f1), URP, AR Foundation 6.6, ARCore, glTFast |
 
 Cấu trúc thư mục chi tiết: [Cấu trúc thư mục và dữ liệu](03-CAU-TRUC-THU-MUC-VA-DU-LIEU.md).
 
@@ -124,8 +124,10 @@ Mã C# không tải về từ xa được, nên thiết kế dồn mọi thứ c
 | Hạng mục | Tình trạng |
 |---|---|
 | Repo `D:\Dev\AR-Experiment` ↔ GitHub `ArisuTsuberuku/AR-Experiment` | Đã tạo, có cấu trúc và tài liệu nền |
-| Kho dữ liệu gốc OneDrive (`01_Anh_Da_Goc`, `02_Video_Goc`) | Đã tạo, chưa có dữ liệu |
-| Unity Hub, Unity Editor, Android Build Support | **Chưa cài** |
+| Kho dữ liệu gốc OneDrive (`01_Anh_Da_Goc`, `02_Video_Goc`) | Có 26 ảnh mô hình đèn sợi đốt (`01_Anh_Da_Goc/Den-soi-dot`); chưa có video |
+| Unity 6000.6.9f1 (`D:\Unity`) + Android Build Support (SDK, NDK, OpenJDK) | Có |
+| Dự án `unity/ARLab` (URP, AR Foundation 6.6.2, ARCore 6.6.2, glTFast 6.21.0) | Có; APK đầu tiên xem `TIEN_TRINH.md` |
+| Gói thí nghiệm `experiments/den-soi-dot` (mô hình tĩnh, kích thước ước lượng) | Bản nháp 0.1.0 |
 | Blender | Có (5.1.2, `D:\Blender`) |
 | Python 3.14 + OpenCV 4.14, Node 24, Git, GitHub CLI, Firebase CLI | Có |
 | Thư viện Python scipy, pandas | **Chưa cài** |
@@ -145,7 +147,9 @@ Danh sách đầy đủ công cụ, connector, plugin: [Công cụ, connector, p
 | 15/11/2026 | Android trước | Build trên Windows; iOS cần máy Mac |
 | 15/11/2026 | Gói nội dung đặt trên Firebase | Đã quen dùng; plugin Firebase có sẵn |
 | 15/11/2026 | Đường chính là "đo – dựng lại"; tái dựng 4D bằng AI là nhánh thử nghiệm | Bảo đảm đúng vật lí và thống nhất giữa các góc nhìn |
-| 15/11/2026 | Unity 6.3 LTS + AR Foundation cùng dòng 6.3 | Bản hỗ trợ dài hạn hiện hành |
+| 15/11/2026 | **Unity 6.6 (6000.6.9f1)** thay cho 6.3 LTS; nâng lên 6.7 LTS khi phát hành. AR Foundation và ARCore cùng dòng 6.6 | Bản 6.6 đã có trên máy và được cập nhật như LTS cho tới khi 6.7 ra; đi 6.6 → 6.7 nhẹ hơn 6.3 → 6.7 (thầy chốt) |
+| 15/11/2026 | Dùng **URP**, không dùng Built-in Render Pipeline | Built-in bị khai tử từ Unity 6.5 và bị bỏ ở 6.7 |
+| 15/11/2026 | Mô hình đầu tiên là **mô hình cấu tạo đèn sợi đốt**, dựng bằng script Blender theo ảnh | Sợi tóc và dây đỡ mảnh 1–2 mm: quét ảnh và AI tạo 3D đều làm hỏng |
 
 ## 10. Điểm còn mở
 
@@ -170,6 +174,7 @@ Danh sách đầy đủ công cụ, connector, plugin: [Công cụ, connector, p
 ## Nguồn
 
 - Unity, vòng đời phiên bản: https://endoflife.date/unity
+- Unity 6.6 is now available: https://discussions.unity.com/t/unity-6-6-is-now-available/1735357
 - Unity, AR Foundation cho Unity 6000.3: https://docs.unity.com/en-us/engine/6000.3/manual/packages-list/packages-all/pack-safe/com-unity-xr-arfoundation
 - Unity, Addressables — phân phối nội dung từ xa: https://docs.unity3d.com/Packages/com.unity.addressables@2.8/manual/remote-content-intro.html
 - Unity Issue Tracker, đường dẫn ngoài ASCII khi build Android: https://issuetracker.unity3d.com/issues/android-build-fails-with-error-message-unityexception-invalid-project-path-when-using-non-ascii-characters-in-project-name

@@ -43,5 +43,6 @@ Biến thí nghiệm vật lí thật thành thí nghiệm AR trên điện tho�
 - Đường dẫn theo máy (kho OneDrive, vault, Blender) đọc từ `config.local.json`; chưa có thì chạy `python tools/kiem_tra_may.py`.
 - Hai máy dùng chung OneDrive (`HOANGLINH-PC`, `MSI`): kiểm tra `$env:COMPUTERNAME` và hồ sơ máy trong vault (`40-devices/`) trước khi dùng đường dẫn tuyệt đối khác.
 - Quy tắc an toàn OneDrive và vault: `AGENTS.md` ở gốc vault `D:\OneDrive\Documents\Obsidian Vault`.
-- Nền tảng: Unity 6.3 LTS, AR Foundation 6.3, Android trước. Gói nội dung đặt trên Firebase.
+- Nền tảng: Unity 6.6 (6000.6.9f1, cài ở `D:\Unity`), URP, AR Foundation 6.6, Android trước; nâng lên 6.7 LTS khi phát hành. Gói nội dung đặt trên Firebase.
+- Build APK: `unity/README.md`. Mô hình 3D dựng bằng script nằm ở `pipeline/4_dung_3d/`.
 - Commit: `<khu vực>: <việc>` với khu vực thuộc `docs | pipeline | unity | exp | tools | firebase`; một nhánh `main`; không `--force`.
